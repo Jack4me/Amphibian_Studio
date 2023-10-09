@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BirdQuest : MonoBehaviour {
-   [SerializeField] private Ring ringObject;
+    public bool IsMiror{ get; private set; } = false;
+    [SerializeField] private SnakeQuest _snakeQuest;
 
-   private void OnTriggerEnter(Collider other){
-      if (other.gameObject.TryGetComponent(out Ring tooth)){
-         if (tooth == ringObject){
-            Debug.Log("Зуб найдён");
-            FindObjectOfType<GameManager>().AddTimeGameTime(180f);
-            ringObject.gameObject.SetActive(false);
-         }
-         
-      }
-   }
+    private void OnTriggerEnter(Collider other){
+        if (_snakeQuest.IsSnakeQuestActivated){
+            if (other.gameObject.TryGetComponent(out Miror miror)){
+                Debug.Log("Miror найдён");
+                IsMiror = true;
+                miror.gameObject.SetActive(false);
+            }
+        }
+    }
 }

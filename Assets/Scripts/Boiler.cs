@@ -7,14 +7,12 @@ public class Boiler : MonoBehaviour {
     public GameObject poisonPrefab; // Префаб зелья, которое вы хотите выдавать
     public int countCorrectPotion = 5; // Количество подходящих предметов для выдачи зелья
 
-    [SerializeField] private List<QuestItem> correctPotionList = new List<QuestItem>();
+    private List<QuestItem> correctPotionList = new List<QuestItem>();
 
-    public void TakeQuestObject(GameObject ObjectToBoiler){
-        if (CorrectPotion(ObjectToBoiler.GetComponent<QuestItem>())){
+    public void TakeQuestObject(QuestItem questItem){
+        if (CorrectPotion(questItem)){
             Debug.Log("Каменюка");
-            QuestItem item = ObjectToBoiler.GetComponent<QuestItem>();
-            correctPotionList.Add(item);
-            ObjectToBoiler.TryGetComponent(out QuestItem questItem);
+            correctPotionList.Add(questItem);
             questItem.OnHide();
             if (correctPotionList.Count == countCorrectPotion){
                 GivePotion();
@@ -31,7 +29,10 @@ public class Boiler : MonoBehaviour {
             Debug.Log("Каменюка Верная");
             return true;
         }
-        return false;
+        else{
+            Debug.Log("Каменюка НЕ Верная");
+            return false;
+        }
     }
 
     void GivePotion(){
@@ -43,8 +44,9 @@ public class Boiler : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other){
-        if (!Player.InstantPlayer.IsHolding()){
-            TakeQuestObject(other.gameObject);
+        if (other.TryGetComponent(out QuestItem questItem)){
+            Debug.Log("Hold Quest Item");
+            TakeQuestObject(questItem);
         }
     }
 }

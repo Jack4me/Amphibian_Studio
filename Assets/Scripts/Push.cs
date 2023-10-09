@@ -2,91 +2,77 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine;
 
-using UnityEngine;
+public class Push : MonoBehaviour {
+    private RaycastHit hitInfo;
 
-public class Push : MonoBehaviour
-{
-    public float forcePower = 10f; // Сила толчка
-    private PushableObject currentObject; // Текущий объект, который игрок может толкать/тянуть
+    [SerializeField] private PlayerInput _input;
+    private bool isPushing = false;
+    RaycastHit hit;
+    private PushableObject currentPushableObject;
+    [SerializeField] Eatable _eatable;
 
-    private void Update()
-    {
-        // Проверяем, нажата ли клавиша E
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            TogglePushPullObject();
-        }
-
-        // Если текущий объект существует и игрок продолжает удерживать клавишу E
-        if (currentObject != null && Input.GetKey(KeyCode.E))
-        {
-            MoveObject();
-        }
-    }
-
-    private void TogglePushPullObject()
-    {
-        // Если есть текущий объект, отпускаем его
-        if (currentObject != null)
-        {
-            ReleaseObject();
-        }
-        else
-        {
-            // Попробуем найти объект, который игрок может толкать/тянуть
-            currentObject = GetCurrentObject();
-            if (currentObject != null)
-            {
-                Debug.Log("Grabbed " + currentObject.name);
+    private void Update(){
+        if (_eatable.IsEaten){
+            if (Input.GetKey(KeyCode.E) && Player.InstantPlayer.IsHolding() == false){
+                Vector3 inputVector = _input.InputVectorNormalize();
+                Vector3 direction = new Vector3(inputVector.x, 0, inputVector.y);
+                if (currentPushableObject != null){
+                    Player.InstantPlayer.rotateSpeed = 0;
+                    Debug.Log("Move Cube");
+                    isPushing = true;
+                    currentPushableObject.transform.Translate(direction * Time.deltaTime);
+                }
+            }
+            
+            if (Input.GetKeyUp(KeyCode.E) && isPushing){
+                Debug.Log("Unpress E");
+                isPushing = false;
+                Player.InstantPlayer.rotateSpeed = 12;
             }
         }
+        if (!_eatable.IsEaten){
+            Debug.Log("Unpress E");
+            isPushing = false;
+            Player.InstantPlayer.rotateSpeed = 12;
+        }
+
+        // if (Input.GetKey(KeyCode.E) && Player.InstantPlayer.IsHolding() == false){
+        //     Player.InstantPlayer.rotateSpeed = 0;
+        //     Vector3 inputVector = _input.InputVectorNormalize();
+        //     Vector3 direction = new Vector3(inputVector.x, 0, inputVector.y);
+        //     if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.3f)){
+        //         Debug.Log(hit.transform.name + "NAME OF RAYCAST");
+        //         if (Player.InstantPlayer.GetCurrentItem() != null){
+        //             if (Player.InstantPlayer.GetCurrentItem().TryGetComponent(out PushableObject pushableObject)){
+        //                 Debug.Log("Move Cube");
+        //                 isPushing = true;
+        //                 pushableObject.transform.Translate(-direction * Time.deltaTime);
+        //             }
+        //         }
+        //     }
+        // }
+        // if (Input.GetKeyUp(KeyCode.E)){
+        //    
+        //         isPushing = false;
+        //         Player.InstantPlayer.rotateSpeed = 12;
+        //         Player.InstantPlayer.ClearSelectedItem();
+        //     
+        // }
     }
-    private void ReleaseObject()
-    {
-        Debug.Log("Released " + currentObject.name);
-        currentObject = null;
-    }
 
-    private void MoveObject()
-    {
-        if (currentObject != null)
-        {
-            Rigidbody rb = currentObject.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                // Определяем направление от игрока к объекту
-                Vector3 playerToObject = currentObject.transform.position - transform.position;
-                playerToObject.y = 0;
-
-                // Применяем силу в направлении, определенном игроком
-                Vector3 forceDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
-                rb.AddForce(forceDir * forcePower, ForceMode.Impulse);
-            }
+    private void OnTriggerEnter(Collider other){
+        if (other.TryGetComponent(out PushableObject pushableObject)){
+            Player.InstantPlayer.ClearSelectedItem();
+            currentPushableObject = pushableObject;
         }
     }
 
-   
+    void OnTriggerExit(Collider other){
+        currentPushableObject = null;
+    }
 
-    // Метод для определения текущего объекта, который игрок может толкать/тянуть
-    private PushableObject GetCurrentObject()
-    {
-        RaycastHit hit;
-
-        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
-        {
-            PushableObject pushableObject = hit.collider.GetComponent<PushableObject>();
-            if (pushableObject != null)
-            {
-                return pushableObject;
-            }
-        }
-
-        return null;
+    public bool IsPushing(){
+        return isPushing;
     }
 }
-
-
-

@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     [SerializeField] private float forcePower;
-
-    private QuestObjectVisual _currentQuestObjectVisual;
+    [SerializeField] public float rotateSpeed;
+    private QuestBookVisual _currentQuestBookVisual;
     private bool _isHolding = false;
     private PickableItem currentInteractable;
-    private bool canMove;
     private Item _item;
     private Item _lastSelectedItem;
-
+    private Vector3 directionRotation;
     [SerializeField] private float jumpForce = 4.4f;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Animator _animator;
     [SerializeField] private float _speed;
+
     private bool _isGrounded = true;
     private Rigidbody _rigidbody;
     private bool _isWalking;
     private Vector3 moveDir;
-
+    public bool IsPressedE{ get; private set; }
     public static Player InstantPlayer{ get; set; }
-    public event EventHandler OnShowVisual;
+    public event EventHandler OnPressButtonE;
 
     private void Awake(){
         if (InstantPlayer != null){
@@ -35,15 +35,26 @@ public class Player : MonoBehaviour {
     }
 
     private void Update(){
-        HadnleInteractions();
         HandleMovement();
         if (Input.GetKeyDown(KeyCode.F)){
             Equip();
+           
         }
-        if (Input.GetKey(KeyCode.E)){
-            Push();
-            OnShowVisual?.Invoke(this, EventArgs.Empty);
-            Debug.Log("Key E");
+        if (Input.GetKeyDown(KeyCode.E)){
+            IsPressedE = true;
+            OnPressButtonE?.Invoke(this, EventArgs.Empty);
+            if (_isHolding && GetCurrentItem().TryGetComponent(out Eatable eatable)){
+                Debug.Log("EAT ITEM");
+                eatable.EatItem();
+                ClearSelectedItem();
+                if (eatable.TryGetComponent(out PickableItem pickableItem)){
+                    pickableItem.Drop();
+                    _isHolding = false;
+                }
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.E)){
+            IsPressedE = false;
         }
         RaycastHit hit;
         bool _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.1f);
@@ -52,148 +63,86 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public void Push(){
-        // if (GetCurrentItem().TryGetComponent(out PushableObject pushableObject)){
-        //     Rigidbody rigidbody = pushableObject.GetComponent<Rigidbody>();
-        //     if (rigidbody != null){
-        //         Vector3 playerToObject = pushableObject.transform.position - transform.position;
-        //         playerToObject.y = 0;
-        //         float angle = Vector3.Angle(transform.forward, playerToObject);
-        //         // Если угол меньше 90 градусов, то толкаем, иначе тянем
-        //         Vector3 forceDir = angle < 90f ? playerToObject.normalized : -playerToObject.normalized;
-        //
-        //         // Применяем силу
-        //         rigidbody.AddForce(forceDir * forcePower, ForceMode.Impulse);
-        //         Debug.Log("Pushable " + pushableObject.name);
-        //     }
-        // }
-    }
-
     public void Equip(){
-        if (GetCurrentItem() != null && !_isHolding){
-            if (GetCurrentItem().TryGetComponent(out PickableItem pickableItem)){
+        if (GetCurrentItem() != null){
+            if (GetCurrentItem().TryGetComponent(out PickableItem pickableItem) && !_isHolding){
                 pickableItem.Pickup();
                 _isHolding = true;
             }
-        }
-        else if (_isHolding){
-            GetCurrentItem().TryGetComponent(out PickableItem pickableItem);
-            pickableItem.Drop();
-            ClearSelectedItem();
-            _isHolding = false;
-        }
-        // if (_isHolding){
-        //     if (GetCurrentItem().transform.TryGetComponent(out PickableItem pickableItem)){
-        //         pickableItem.Drop();
-        //         _isHolding = false;
-        //     }
-        // }
-        // else if (GetCurrentItem() != null && !_isHolding){
-        //     if (GetCurrentItem().transform.TryGetComponent(out PickableItem pickableItem)){
-        //         pickableItem.Pickup();
-        //         _isHolding = true;
-        //     }
-        // }
-    }
-
-    public QuestObjectVisual GetCurrentQuestObject(){
-        return _currentQuestObjectVisual;
-    }
-
-    public Item GetCurrentItem(){
-        return _item;
-    }
-
-    public void CurrentSelectedItem(Item _item){
-        this._item = _item;
-    }
-
-    public void ClearSelectedItem(){
-        _item = null;
-    }
-
-    private void HadnleInteractions(){
-        Vector3 inputVector = _playerInput.InputVectorNormalize();
-        Vector3 direction = new Vector3(inputVector.x, 0, inputVector.y);
-        float distance = _speed * Time.deltaTime;
-        float playerHeight = 0.2f;
-        float playerRadius = 0.2f;
-        float interactDistance = 2f;
-        RaycastHit hit;
-        if (Physics.CapsuleCast(transform.position, transform.position + Vector3.forward * 0.2f,
-                0.2f, direction, out hit, distance)){
-            if (hit.transform.TryGetComponent(out Item item)){
-                if (!_isHolding){
-                    CurrentSelectedItem(item);
-                }
-            }
-        }
-    }
-
-    private void HandleMovement(){
-        Vector3 inputVector = _playerInput.InputVectorNormalize();
-        Vector3 direction = new Vector3(inputVector.x, 0, inputVector.y);
-        float distance = _speed * Time.deltaTime;
-        float playerHeight = 0.2f;
-        float playerRadius = 0.2f;
-        canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight,
-            playerRadius, direction, distance);
-        Debug.Log(canMove);
-        if (!canMove){
-            Vector3 moveX = new Vector3(direction.x, 0, 0).normalized;
-            canMove = direction.x != 0 && !Physics.CapsuleCast(transform.position,
-                transform.position + Vector3.up * playerHeight,
-                playerRadius, moveX, distance);
-            if (canMove){
-                direction = moveX;
-            }
             else{
-                Vector3 moveZ = new Vector3(0, 0, direction.z).normalized;
-                canMove = direction.z != 0 && !Physics.CapsuleCast(transform.position,
-                    transform.position + Vector3.up * playerHeight,
-                    playerRadius, moveZ, distance);
-                if (canMove){
-                    direction = moveZ;
-                }
+                print("DROP");
+                pickableItem.Drop();
+                _isHolding = false;
+                SetSelectedItem(null);
             }
         }
-        if (canMove){
-            transform.position += direction * distance;
-        }
-        _isWalking = direction != Vector3.zero;
-        float rotateSpeed = 12;
-        transform.forward = Vector3.Slerp(transform.forward, direction, Time.deltaTime * rotateSpeed);
     }
 
     public bool IsHolding(){
         return _isHolding;
     }
 
+    public QuestBookVisual GetCurrentQuestObject(){
+        return _currentQuestBookVisual;
+    }
+
+    public Item GetCurrentItem(){
+        return _item;
+    }
+
+    public void SetSelectedItem(Item _item){
+        this._item = _item;
+    }
+
+    public void ClearSelectedItem(){
+        _item = null;
+    }
+    
+    public void HandleMovement(){
+        Vector3 inputVector = _playerInput.InputVectorNormalize();
+        directionRotation = new Vector3(inputVector.x, 0, inputVector.y);
+        float distance = _speed * Time.deltaTime;
+        float playerHeight = 0.2f;
+        float playerRadius = 0.2f;
+        _isWalking = directionRotation != Vector3.zero;
+        transform.position += directionRotation * distance;
+        transform.forward = Vector3.Slerp(transform.forward, directionRotation, Time.deltaTime * rotateSpeed);
+    }
+
     private void Jump(){
         _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        _isGrounded = false;
     }
 
     public bool IsWalking(){
-        return _isWalking && canMove;
+        return _isWalking && _isGrounded;
     }
-    // private void OnTriggerEnter(Collider other){
-    //     if (other.transform.TryGetComponent(out PickableItem interactableObj) && !_isHolding){
-    //         currentInteractable = interactableObj;
-    //     }
-    //     if (other.transform.TryGetComponent(out QuestObjectVisual questObject)){
-    //         _currentQuestObjectVisual = questObject;
-    //     }
-    // }
-    //
-    // private void OnTriggerExit(Collider other){
-    //     if (other.transform.TryGetComponent(out PickableItem interactableObj) &&
-    //         interactableObj == currentInteractable && !_isHolding){
-    //         currentInteractable = null;
-    //     }
-    //     if (other.transform.TryGetComponent(out QuestObjectVisual questObject)){
-    //         _currentQuestObjectVisual = null;
-    //         OnShowVisual?.Invoke(this, EventArgs.Empty);
-    //     }
-    // }
+
+    private void OnTriggerEnter(Collider other){
+        if (other.transform.TryGetComponent(out PickableItem pickableItem) && !_isHolding){
+            SetSelectedItem(pickableItem);
+        }
+        // if (other.transform.TryGetComponent(out QuestBookVisual questObject)){
+        //     _currentQuestBookVisual = questObject;
+        // }
+    }
+
+    private void OnTriggerExit(Collider other){
+        if (other.transform.TryGetComponent(out PickableItem interactableObj) && !_isHolding){
+            SetSelectedItem(null);
+            Debug.Log("CLEAR = null");
+            currentInteractable = null;
+        }
+        // if (other.transform.TryGetComponent(out QuestBookVisual questObject)){
+        //     _currentQuestBookVisual = null;
+        //     OnShowVisual?.Invoke(this, EventArgs.Empty);
+        // }
+    }
+
+    public bool IsGruonded(){
+        RaycastHit hit;
+        bool _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.1f);
+        return _isGrounded;
+    }
+
+   
 }

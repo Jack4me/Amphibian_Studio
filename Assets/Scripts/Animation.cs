@@ -2,18 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Animation : MonoBehaviour
-{
-    private const string IS_WALKING = "IsRun";
+public class Animation : MonoBehaviour {
+    private const string IS_WALKING = "IsWalking";
+    private const string IsStartPushing = "IsStartPushing";
+    [SerializeField] Push push;
     private Animator animator;
 
     [SerializeField] private Player player;
+
     private void Awake(){
         animator = GetComponent<Animator>();
     }
 
     private void Update(){
-        animator.SetBool(IS_WALKING, player.IsWalking() );
+        animator.SetBool(IS_WALKING, player.IsWalking());
+        animator.SetBool(IsStartPushing, push.IsPushing());
     }
 }
-
