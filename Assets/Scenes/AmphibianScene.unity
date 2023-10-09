@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverHandle: {fileID: 194333905}
-  _gameTime: 108
+  _gameTime: 50
 --- !u!4 &194333904
 Transform:
   m_ObjectHideFlags: 0
@@ -891,7 +891,7 @@ PrefabInstance:
     - target: {fileID: 2893790263373000962, guid: 57375c367a5ac3f4983de4061c78c02a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.23
+      value: -2.26
       objectReference: {fileID: 0}
     - target: {fileID: 2893790263373000962, guid: 57375c367a5ac3f4983de4061c78c02a,
         type: 3}
@@ -1528,7 +1528,7 @@ PrefabInstance:
     - target: {fileID: 4680217145231678021, guid: 5736b355b3056e44db974e8ff0404ad4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.085
+      value: -7.03
       objectReference: {fileID: 0}
     - target: {fileID: 4680217145231678021, guid: 5736b355b3056e44db974e8ff0404ad4,
         type: 3}
@@ -1701,17 +1701,17 @@ PrefabInstance:
     - target: {fileID: 1352056066144316467, guid: 9d2d53fde32f9f8448e8129961d3395e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5
+      value: -1.652
       objectReference: {fileID: 0}
     - target: {fileID: 1352056066144316467, guid: 9d2d53fde32f9f8448e8129961d3395e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.8
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 1352056066144316467, guid: 9d2d53fde32f9f8448e8129961d3395e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.67
+      value: 1.279
       objectReference: {fileID: 0}
     - target: {fileID: 1352056066144316467, guid: 9d2d53fde32f9f8448e8129961d3395e,
         type: 3}
