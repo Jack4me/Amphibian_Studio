@@ -5,25 +5,39 @@ using UnityEngine;
 
 public class SnakeQuest : MonoBehaviour {
     public bool IsSnakeQuestActivated{ get; private set; } = false;
+    public bool CanInteract{ get; private set; } = false;
     [SerializeField] BirdQuest _birdQuest;
 
-    private void OnTriggerEnter(Collider other){
-        Debug.Log(_birdQuest.IsMiror);
-        if (other.GetComponent<Player>()){
-            if (IsSnakeQuestActivated && _birdQuest.IsMiror){
-                print("SnakeQuest Completed");
+    private void Start(){
+        Player.InstantPlayer.OnPressButtonE += InstantPlayerOnOnPressButtonE;
+    }
 
-            }
-            else if (IsSnakeQuestActivated  ){
-                print("DEAD FROG");
-
-            }
-                else
-            {
-                IsSnakeQuestActivated = true;
-                print("SnakeQuest Activated");
+    private void InstantPlayerOnOnPressButtonE(object sender, EventArgs e){
+        {
+            if (CanInteract){
+                if (IsSnakeQuestActivated && _birdQuest.IsMiror){
+                    print("SnakeQuest Completed");
+                }
+                else if (IsSnakeQuestActivated){
+                    print("DEAD FROG");
+                }
+                else{
+                    IsSnakeQuestActivated = true;
+                    print("SnakeQuest Activated");
+                }
             }
         }
-        
+    }
+
+    private void OnTriggerStay(Collider other){
+        if (other.GetComponent<Player>()){
+            CanInteract = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other){
+        if (other.GetComponent<Player>()){
+            CanInteract = false;
+        }
     }
 }
