@@ -6,6 +6,7 @@ using UnityEngine;
 public class Eatable : MonoBehaviour {
     [SerializeField] GameObject childObject;
     [SerializeField] Collider collider;
+    [SerializeField] private GameOverHandle _gameOver;
     public bool IsEaten{ get; private set; } = false;
     public bool IsSmall{ get; private set; } = false;
     private float timeScale = 30f;
@@ -33,6 +34,10 @@ public class Eatable : MonoBehaviour {
             
             Player.InstantPlayer.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             IsSmall = true;
+            HideItem();
+        }
+        else if(CompareTag("DeathMushroom")){
+            _gameOver.GameOver();
             HideItem();
         }
         StartCoroutine(StartScale());

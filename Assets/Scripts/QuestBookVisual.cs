@@ -7,7 +7,9 @@ public class QuestBookVisual : MonoBehaviour {
     [SerializeField] private GameObject _visualQuest;
     private bool _IsShowingVisual = false;
     private bool _IsPlayer = false;
-    public bool IsCanPickUp{ get; private set; } = false;
+    [SerializeField] private DeathTalking _deathTalking;
+    private bool isDeathTalkingVisible = true;
+    public bool IsCanPickUp{ get; private set; } = false; // надо false сделать что б нельзя было сразу поднимать
 
     private void Start(){
         Player.InstantPlayer.OnPressButtonE += InstantPlayerOnOnPressButtonE;
@@ -43,5 +45,19 @@ public class QuestBookVisual : MonoBehaviour {
     private void OnTriggerExit(Collider other){
         Hide();
         _IsPlayer = false;
+        if (isDeathTalkingVisible && IsCanPickUp){
+            _deathTalking.Show();
+            StartCoroutine(HideDeathTalkingAfterDelay(2f));
+        }
+    }
+
+    private IEnumerator HideDeathTalkingAfterDelay(float delayInSeconds){
+        yield return new WaitForSeconds(delayInSeconds);
+        _deathTalking.Hide();
+        isDeathTalkingVisible = false;
+    }
+
+    private void Update(){
+        Debug.Log("isDeathTalkingVisible" + isDeathTalkingVisible);
     }
 }

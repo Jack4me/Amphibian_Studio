@@ -9,17 +9,22 @@ public class StartCage : MonoBehaviour {
     private Rigidbody _rigidbodyCage;
     [SerializeField] private DeathTalking _deathTalking;
     [SerializeField] TextPromts _textPromts;
+    bool showKeybordPromt = true;
 
     private void Awake(){
         ShowDeathPromt();
     }
+
     void ShowDeathPromt(){
         _deathTalking.Show();
     }
+
     private void OnTriggerEnter(Collider other){
         if (other.transform.GetComponent<Player>()){
             _deathTalking.Hide();
-            _textPromts.Show();
+            if (showKeybordPromt){
+                _textPromts.Show();
+            }
             Debug.Log("Player PUSH CAGE");
             transform.position += Vector3.right * 0.01f;
         }
@@ -27,8 +32,9 @@ public class StartCage : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision){
         if (collision.transform.CompareTag("Ground")){
-           Rigidbody rb = exitCageCollider.gameObject.AddComponent<Rigidbody>();
-           _textPromts.Hide();
+            Rigidbody rb = exitCageCollider.gameObject.AddComponent<Rigidbody>();
+            _textPromts.Hide();
+            showKeybordPromt = false;
         }
     }
 }

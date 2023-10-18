@@ -10,10 +10,9 @@ public class GameOverHandle : MonoBehaviour {
     [SerializeField] private TimeController time;
     public bool gameOver{ get; private set; } = false;
 
-
     private void Update(){
         if (gameOver){
-            if (Input.anyKeyDown){
+            if (Input.GetKeyDown(KeyCode.Space)){
                 StartAgain();
                 gameOver = false;
             }
@@ -21,6 +20,10 @@ public class GameOverHandle : MonoBehaviour {
     }
 
     public void GameOver(){
+        if (Player.InstantPlayer.GetCurrentItem()){
+            if (TryGetComponent(out PickableItem _pickableItem))
+                _pickableItem.Drop();
+        }
         Time.timeScale = 0;
         gameOver = true;
         gameOverVisual.SetActive(true);

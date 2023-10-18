@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PickableItem : Item {
     private bool isPickedUp = false;
-    [SerializeField] QuestBookVisual _questBookVisual;
+    QuestBookVisual _questBookVisual;
 
     private void Awake(){
         _questBookVisual = FindObjectOfType<QuestBookVisual>();

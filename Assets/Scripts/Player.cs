@@ -38,7 +38,6 @@ public class Player : MonoBehaviour {
         HandleMovement();
         if (Input.GetKeyDown(KeyCode.F)){
             Equip();
-           
         }
         if (Input.GetKeyDown(KeyCode.E)){
             IsPressedE = true;
@@ -82,6 +81,10 @@ public class Player : MonoBehaviour {
         return _isHolding;
     }
 
+    public void ChangeHold(){
+        _isHolding = false;
+    }
+
     public QuestBookVisual GetCurrentQuestObject(){
         return _currentQuestBookVisual;
     }
@@ -97,7 +100,7 @@ public class Player : MonoBehaviour {
     public void ClearSelectedItem(){
         _item = null;
     }
-    
+
     public void HandleMovement(){
         Vector3 inputVector = _playerInput.InputVectorNormalize();
         directionRotation = new Vector3(inputVector.x, 0, inputVector.y);
@@ -121,9 +124,6 @@ public class Player : MonoBehaviour {
         if (other.transform.TryGetComponent(out PickableItem pickableItem) && !_isHolding){
             SetSelectedItem(pickableItem);
         }
-        // if (other.transform.TryGetComponent(out QuestBookVisual questObject)){
-        //     _currentQuestBookVisual = questObject;
-        // }
     }
 
     private void OnTriggerExit(Collider other){
@@ -132,10 +132,6 @@ public class Player : MonoBehaviour {
             Debug.Log("CLEAR = null");
             currentInteractable = null;
         }
-        // if (other.transform.TryGetComponent(out QuestBookVisual questObject)){
-        //     _currentQuestBookVisual = null;
-        //     OnShowVisual?.Invoke(this, EventArgs.Empty);
-        // }
     }
 
     public bool IsGruonded(){
@@ -143,6 +139,4 @@ public class Player : MonoBehaviour {
         bool _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.1f);
         return _isGrounded;
     }
-
-   
 }
