@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PickableItem : Item {
-    private bool isPickedUp = false;
+    public bool isPickedUp{ get; private set; } = false;
     QuestBookVisual _questBookVisual;
 
     private void Awake(){

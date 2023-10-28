@@ -6,6 +6,7 @@ using UnityEngine;
 public class WindowEscape : MonoBehaviour {
     [SerializeField] private CompleteQuestChecker _completeQuestChecker;
     [SerializeField] private GameObject EscapeImage;
+    [SerializeField] private AudioSource clock;
 
     private void Awake(){
         EscapeImage.SetActive(false);
@@ -16,6 +17,7 @@ public class WindowEscape : MonoBehaviour {
             if (_completeQuestChecker.questCompete){
                 EscapeImage.SetActive(true);
                 Time.timeScale = 0;
+                clock.enabled = false;
             }
         }
     }

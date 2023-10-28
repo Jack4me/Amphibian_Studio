@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseDoorTranform : MonoBehaviour
-{
+public class MouseDoorTranform : MonoBehaviour {
+    
     [SerializeField] Eatable _eatable;
     [SerializeField] Transform spawnPointTop;
    void OnTriggerEnter(Collider other){
-        if (other.TryGetComponent(out Player player) && _eatable.IsSmall){
+        if (other.TryGetComponent(out Player player) && _eatable._portalActivated){
             player.transform.position = spawnPointTop.position;
+            
         }
     }
 }

@@ -18,6 +18,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/DeathTalking.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/DoorColliderPush.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/FollowCamera.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/FootSteps.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/LvlChanger.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/MySceneManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/QuestObjects/Ruby.cs" root0="FORCE_HIGHLIGHTING" />
@@ -112,6 +113,10 @@
       <workItem from="1696573909182" duration="5933000" />
       <workItem from="1696670682754" duration="31436000" />
       <workItem from="1697025499592" duration="61269000" />
+      <workItem from="1697807663662" duration="5943000" />
+      <workItem from="1697902442787" duration="7204000" />
+      <workItem from="1698041059375" duration="11923000" />
+      <workItem from="1698302140117" duration="7154000" />
     </task>
     <servers />
   </component>

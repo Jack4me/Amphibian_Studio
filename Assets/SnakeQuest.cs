@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SnakeQuest : MonoBehaviour {
     [SerializeField] private GameObject _toothPrefab;
     [SerializeField] private Transform createPoint;
-    [SerializeField] private GameObject SnakeUIDialog;
+    [SerializeField] private GameObject snakeUIDialog;
+    [SerializeField] private AudioSource _snakeSound;
+    [SerializeField] private RawImage _snakeDeathImage;
     public bool IsSnakeQuestActivated{ get; private set; } = false;
     public bool CanInteract{ get; private set; } = false;
     [SerializeField] BirdClock birdClock;
@@ -22,16 +25,21 @@ public class SnakeQuest : MonoBehaviour {
                     GameObject tooth = Instantiate(_toothPrefab);
                     tooth.transform.position = createPoint.position;
                     print("SnakeQuest Completed");
+                    _snakeSound.enabled = false;
+                    _snakeSound.enabled = true;
                     Player.InstantPlayer.OnPressButtonE -= InstantPlayerOnOnPressButtonE;
                 }
                 else if (IsSnakeQuestActivated){
                     print("DEAD FROG");
-                    _gameOverHandle.GameOver();
+                    _snakeDeathImage = GetComponent<RawImage>();
+
+                    _gameOverHandle.GameOver(_snakeDeathImage);
                 }
                 else{
+                    _snakeSound.enabled = true;
                     IsSnakeQuestActivated = true;
                     print("SnakeQuest Activated");
-                    SnakeUIDialog.SetActive(true);
+                    snakeUIDialog.SetActive(true);
                 }
             }
         }
@@ -46,7 +54,7 @@ public class SnakeQuest : MonoBehaviour {
     private void OnTriggerExit(Collider other){
         if (other.GetComponent<Player>()){
             CanInteract = false;
-            SnakeUIDialog.SetActive(false);
+            snakeUIDialog.SetActive(false);
         }
     }
 }
