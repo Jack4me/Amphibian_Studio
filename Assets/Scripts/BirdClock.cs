@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BirdClock : MonoBehaviour {
-    [SerializeField] private GameObject _doneMirorQuestUI;
+   
     [SerializeField] private GameObject _startMirorQuestUI;
+    [SerializeField] private AudioSource _birdSong;
     public bool IsMirorGave{ get; private set; } = false; //сделай фолс
     
     public bool IsCarryMiror{ get; private set; } = false;
@@ -26,7 +27,7 @@ public class BirdClock : MonoBehaviour {
                     Debug.Log("Miror найдён");
                     IsMirorGave = true;
                      _miror.gameObject.SetActive(false);
-                    _doneMirorQuestUI.SetActive(true);
+                     _birdSong.enabled = true;
                     if ( Player.InstantPlayer.GetCurrentItem().TryGetComponent(out PickableItem _pickableItem)){
                         Player.InstantPlayer.ChangeHold();
                         _pickableItem.Drop();
@@ -54,14 +55,14 @@ public class BirdClock : MonoBehaviour {
 
     private void OnTriggerExit(Collider other){
         if (other.GetComponent<Player>()){
-            _doneMirorQuestUI.SetActive(false);
+            
             CanInteract = false;
         }
     }
 
     private void OnTriggerEnter(Collider other){
         if (other.GetComponent<Player>()){
-            if (dialodStartUI){
+            if (dialodStartUI&&_snakeQuest.IsSnakeQuestActivated){
                 _startMirorQuestUI.SetActive(true);
                 StartCoroutine(HideUIDialog(2f));
             }

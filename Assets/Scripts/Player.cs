@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Animator _animator;
     [SerializeField] private float _speed;
-
+    [SerializeField]private QuestBookVisual _questBookVisual;
     private bool _isGrounded = true;
     private Rigidbody _rigidbody;
     private bool _isWalking;
@@ -78,16 +78,18 @@ public class Player : MonoBehaviour {
     }
 
     public bool IsHolding(){
-        return _isHolding;
+        if (_questBookVisual.IsCanPickUp){
+            
+            return _isHolding ;
+        }
+        return  false;
     }
 
     public void ChangeHold(){
         _isHolding = false;
     }
 
-    public QuestBookVisual GetCurrentQuestObject(){
-        return _currentQuestBookVisual;
-    }
+    
 
     public Item GetCurrentItem(){
         return _item;

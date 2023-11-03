@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StartCage : MonoBehaviour {
+   [SerializeField] private AudioSource cageDrop;
     [SerializeField] Transform doorCollider;
     [SerializeField] Transform exitCageCollider;
     private Rigidbody _rigidbodyCage;
@@ -32,6 +33,7 @@ public class StartCage : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision){
         if (collision.transform.CompareTag("Ground")){
+            cageDrop.enabled = true;
             Rigidbody rb = exitCageCollider.gameObject.AddComponent<Rigidbody>();
             _textPromts.Hide();
             showKeybordPromt = false;

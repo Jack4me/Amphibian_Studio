@@ -6,8 +6,8 @@ TagManager:
   tags:
   - Ground
   - GrowerMushroom
-  - ReduceMushroom
   - DeathMushroom
+  - PortalMushroom
   layers:
   - Default
   - TransparentFX

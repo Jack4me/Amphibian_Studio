@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Eatable : MonoBehaviour {
     [SerializeField] GameObject childObject;
     [SerializeField] Collider collider;
     [SerializeField] private GameOverHandle _gameOver;
+    [SerializeField] private GameObject _portalActivatedVisual;
+    [SerializeField] private RawImage deathMushroomImage;
+
     public bool IsEaten{ get; private set; } = false;
-    public bool IsSmall{ get; private set; } = false;
+    public bool _portalActivated{ get; private set; } = false;
     private float timeScale = 30f;
 
     private void Awake(){
@@ -26,18 +30,16 @@ public class Eatable : MonoBehaviour {
 
     public void EatItem(){
         if (CompareTag("GrowerMushroom")){
-            Player.InstantPlayer.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             HideItem();
         }
-        else if (CompareTag("ReduceMushroom"))
-        {
-            
-            Player.InstantPlayer.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            IsSmall = true;
+        else if (CompareTag("PortalMushroom")){
+            _portalActivatedVisual.SetActive(true);
+            _portalActivated = true;
             HideItem();
         }
-        else if(CompareTag("DeathMushroom")){
-            _gameOver.GameOver();
+        else if (CompareTag("DeathMushroom")){
+            deathMushroomImage = GetComponent<RawImage>();
+            _gameOver.GameOver(deathMushroomImage);
             HideItem();
         }
         StartCoroutine(StartScale());
